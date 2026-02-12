@@ -86,7 +86,7 @@ class CustomTestRunner(TestRunnerBase):
                 if (cmd == 'T'):
                     click.secho(f"From test '{self.test_name}' in {self.test_file}:{line}: {args[0]}", fg='yellow')
                 elif (cmd == 'C'):
-                    cont = click.confirm(click.style(f"Continue running the '{self.test_name}' test in {self.test_file}:{line}?", fg='green', bold=True))
+                    cont = click.confirm(click.style(f"Continue running the '{self.test_name}' test in {self.test_file}:{line}?", fg='green', bold=True), default=True)
                     self.ser_mngr.send("y" if cont else "n")
                 elif cmd == 'S':
                     self.test_suite.add_case(TestCase(
