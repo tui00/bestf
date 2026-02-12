@@ -1,61 +1,61 @@
 # BESTF: Best Framework for Arduino Testing
 
-BESTF — легковесный фреймворк для тестирования кода на платформе Arduino. Позволяет структурировать тестовые сценарии и получать детализированные результаты выполнения.
+BESTF is a lightweight framework for testing code on the Arduino platform. It allows you to structure test scenarios and get detailed execution results.
 
-Файл FOR_MACRO.h взят от Alex Gyver
+The FOR_MACRO file.The h is taken from Alex Gyver
 
-### О названии BESTF
+### About the name of BESTF
 
-BESTF расшифровывается как *Best Framework* — «лучший фреймворк». Ещё одна причина названия — ключевые команды, используемые в работе: **B**, **E**, **S**, **T**, **F**. Они лежат в основе механизма отчётности фреймворка.
+BESTF stands for *Best Framework* — "the best framework". Another reason for the name is the key commands used in the work: **B**, **E**, **S**, **T**, **F**. They are at the heart of the framework's reporting mechanism.
 
-## Установка
+## Installation
 
-Для установки фреймворка:
+To install the framework:
 
-1. Скопируйте все файлы проекта в папку `test`.
-2. В файле `platformio.ini` добавьте следующие параметры:
+1. Copy all the project files to the 'test` folder.
+2. In the `platformio.ini` file, add the following parameters:
 * `test_speed = 9600`
 * `test_framework = custom`
 
-Есть простой вариант:
+There is a simple option:
 
-1. Запустите файл `install.py` из любой директории
+1. Run the file `install.py ` from any directory
 
-Рекомендуемый вариант:
+Recommended option:
 
-1. Перейдите в корень проекта
-2. Запустите `git clone http://tui00/bestf.git`
-3. Запустите `./bestf/install.py`
-4. Следуйте инструкциям на экране
+1. Go to the root of the project
+2. Run `git clone http://tui00/bestf.git `
+3. Run `./bestf/install.py `
+4. Follow the on-screen instructions
 
-## Описание макросов
+## Description of macros
 
-### Группа 1: управление жизненным циклом тестов
+## Group 1: Test lifecycle management
 
-Эти макросы задают структуру выполнения тестов — определяют, что выполняется до и после их запуска:
+These macros define the structure of test execution — they determine what is executed before and after their launch.:
 
-* **`START`** — определяет блок кода, который выполнится перед всеми тестами.
-* **`NO_START`** — отменяет выполнение предварительного блока кода перед тестами.
-* **`STOP`** — определяет блок кода, который выполнится после всех тестов.
-* **`NO_STOP`** — отменяет выполнение завершающего блока кода после тестов.
-* **`NO_OTHERS`** — одновременно отменяет предварительный и завершающий блоки кода (эквивалентно `NO_START NO_STOP`).
+* **`START`** — defines the block of code that will be executed before all tests.
+* **`NO_START`** — cancels the execution of the preliminary code block before the tests.
+* **`STOP`** — defines the block of code that will be executed after all tests.
+* **`NO_STOP`** — cancels the execution of the final block of code after the tests.
+* **`NO_OTHERS'** — simultaneously cancels the preliminary and final code blocks (equivalent to `NO_START NO_STOP').
 
-### Группа 2: работа с тестами и отладкой
+## Group 2: Working with tests and debugging
 
-Макросы для создания тестов, проверки условий и вывода отладочной информации:
+Macros for creating tests, checking conditions, and outputting debugging information:
 
-* **`TEST(name)`** — создаёт новый тест с указанным именем.
-* **`ASSUME(condition)`** — проверяет условие: если оно не выполняется, тест считается проваленным.
-* **`END()`** — отмечает успешное завершение теста.
-* **`ABORT()`** — принудительно прерывает выполнение теста.
-* **`PRINT(...)`** — выводит отладочное сообщение с указанием номера строки.
-* **`TESTS_LIST(...)`** — перечисляет тесты, которые нужно запустить (передаются через запятую).
+* **`TEST(name)`** — creates a new test with the specified name.
+* **`ASSUME(condition)`** — checks the condition: if it is not fulfilled, the test is considered failed.
+* **`END()`** — marks the successful completion of the test.
+* **`ABORT()`** — forcibly aborts the test.
+* **`PRINT(...)`** — outputs a debugging message indicating the line number.
+* **`TESTS_LIST(...)`** — lists the tests that need to be run (separated by commas).
 
 ---
 
-## Примеры использования
+## Usage examples
 
-### Пример 1: с `NO_OTHERS`
+### Example 1: with `NO_OTHERS`
 
 ```c
 #include "bestf.h"
@@ -71,7 +71,7 @@ TEST(simple_check) {
 TESTS_LIST(simple_check)
 ```
 
-### Пример 2: с `NO_START`
+### Example 2: with `NO_START`
 
 ```c
 #include "bestf.h"
@@ -88,14 +88,14 @@ TEST(positive_test) {
 }
 
 TEST(negative_test) {
-    ABORT(); // Тест будет прерван
-    END();   // Эта строка не выполнится
+    ABORT(); // The test will be aborted
+    END(); // This line will not execute
 }
 
 TESTS_LIST(positive_test, negative_test)
 ```
 
-### Пример 3: без сокращений
+### Example 3: without abbreviations
 
 ```c
 #include "bestf.h"
