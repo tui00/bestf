@@ -68,6 +68,8 @@
     STOP {}
 #define NO_OTHERS NO_START NO_STOP
 
+#define WAIT(seconds) delay(seconds##000)
+
 #define TESTS_LIST(...)                                                  \
     void setup(void)                                                     \
     {                                                                    \

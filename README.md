@@ -30,6 +30,9 @@ After completing these steps, you will be able to create your tests using this f
 * `_INTERNAL_STR_` and `_INTERNAL_STR` -- together convert something to a string
 * `_INTERNAL_RUN_TEST` -- runs a test
 
+## Other
+* `WAIT` -- to wait n seconds
+
 ## Examples
 ### `NO_OTHERS`
 ```cpp
@@ -39,6 +42,7 @@ NO_OTHERS
 
 TEST(pass)
 {
+    WAIT(3);
     ASSUME(1 + 1 == 2);
     END;
 }
