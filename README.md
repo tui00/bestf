@@ -1,125 +1,127 @@
-# BESTF: Best Framework for Arduino Testing
+# BESTF
+A framework for testing `Arduino` code.
 
-BESTF is a lightweight framework for testing code on the Arduino platform. It allows you to structure test scenarios and get detailed execution results.
-
-The FOR_MACRO file.The h is taken from Alex Gyver
-
-### About the name of BESTF
-
-BESTF stands for *Best Framework* — "the best framework". Another reason for the name is the key commands used in the work: **B**, **E**, **S**, **T**, **F**. They are at the heart of the framework's reporting mechanism.
+`BESTF` stands for:
+1. `BestF` -- Best Framework
+2. `Begin`, `End`, `Start`, `True`, `False` -- command names
 
 ## Installation
+1. Download `FOR_MACRO` from `Alex Gyver` on his github or use the ready-made one
+2. Copy the `FOR_MACRO.h`, `bestf.h` and `test_custom_runner.py` to the `test` folder in the root of your `PlatformIO` project
+3. Add the line `test_framework = custom` to the `platformio.ini` file
+After completing these steps, you will be able to create your tests using this framework
 
-To install the framework:
+## Macros
+### Preparatory
+* `TESTS_LIST` -- for listing tests and auto-generating main
+* `START` -- for creating a start function
+* `STOP` -- to create a stop function
+* `NO_START` -- to disable the start function
+* `NO_STOP` -- to disable the stop function
+* `NO_OTHERS` -- to disable the start and stop functions
 
-1. Copy all the project files to the 'test` folder.
-2. In the `platformio.ini` file, add the following parameters:
-* `test_speed = 9600`
-* `test_framework = custom`
+### Standard
+* `TEST` -- to create a test
+* `ASSUME` -- to check a condition
+* `END` -- to indicate a successful test completion
+* `ABORT` -- to indicate an unsuccessful test completion
 
-There is a simple option:
+### Internal
+* `_INTERNAL_STR_` and `_INTERNAL_STR` -- together convert something to a string
+* `_INTERNAL_RUN_TEST` -- runs a test
 
-1. Run the file `install.py ` from any directory
-
-Recommended option:
-
-1. Go to the root of the project
-2. Run `git clone http://tui00/bestf.git `
-3. Run `./bestf/install.py `
-4. Follow the on-screen instructions
-
-## Description of macros
-
-## Group 1: Test lifecycle management
-
-These macros define the structure of test execution — they determine what is executed before and after their launch.:
-
-* **`START`** — defines the block of code that will be executed before all tests.
-* **`NO_START`** — cancels the execution of the preliminary code block before the tests.
-* **`STOP`** — defines the block of code that will be executed after all tests.
-* **`NO_STOP`** — cancels the execution of the final block of code after the tests.
-* **`NO_OTHERS'** — simultaneously cancels the preliminary and final code blocks (equivalent to `NO_START NO_STOP').
-
-## Group 2: Working with tests and debugging
-
-Macros for creating tests, checking conditions, and outputting debugging information:
-
-* **`TEST(name)`** — creates a new test with the specified name.
-* **`ASSUME(condition)`** — checks the condition: if it is not fulfilled, the test is considered failed.
-* **`END()`** — marks the successful completion of the test.
-* **`ABORT()`** — forcibly aborts the test.
-* **`PRINT(...)`** — outputs a debugging message indicating the line number.
-* **`TESTS_LIST(...)`** — lists the tests that need to be run (separated by commas).
-
----
-
-## Usage examples
-
-### Example 1: with `NO_OTHERS`
-
-```c
+## Examples
+### `NO_OTHERS`
+```cpp
 #include "bestf.h"
 
 NO_OTHERS
 
-TEST(simple_check) {
+TEST(pass)
+{
     ASSUME(1 + 1 == 2);
-    PRINT("Simple math passed");
-    END();
+    END;
 }
 
-TESTS_LIST(simple_check)
+TEST(fail)
+{
+    ASSUME(1 + 1 == 3);
+    END;
+}
+
+TEST(fail)
+{
+    ABORT;
+}
+
+TESTS_LIST(pass, fail, abort)
 ```
 
-### Example 2: with `NO_START`
-
-```c
+### `NO_START`
+```cpp
 #include "bestf.h"
 
 NO_START
 
-STOP {
-    PRINT("All tests completed, cleaning up...");
+STOP
+{
+    // Cleanup
 }
 
-TEST(positive_test) {
-    ASSUME(true);
-    END();
+TEST(pass)
+{
+    ASSUME(1 + 1 == 2);
+    END;
 }
 
-TEST(negative_test) {
-    ABORT(); // The test will be aborted
-    END(); // This line will not execute
-}
-
-TESTS_LIST(positive_test, negative_test)
+TESTS_LIST(pass)
 ```
 
-### Example 3: without abbreviations
-
-```c
+### `START' and `STOP`
+```cpp
 #include "bestf.h"
 
-START {
-    PRINT("Initializing test environment...");
+START
+{
+    // Init
 }
 
-STOP {
-    PRINT("Shutting down test environment.");
+STOP
+{
+    // Cleanup
 }
 
-TEST(division_check) {
-    int a = 10, b = 2;
-    ASSUME(a / b == 5);
-    PRINT("Division test passed");
-    END();
+TEST(pass)
+{
+    ASSUME(1 + 1 == 2);
+    END;
 }
 
-TEST(string_check) {
-    const char* str = "hello";
-    ASSUME(str[0] == 'h');
-    END();
-}
-
-TESTS_LIST(division_check, string_check)
+TESTS_LIST(pass)
 ```
+
+## Protocol
+### Message format
+Message format from `Arduino` to computer: `<First letter of command><Argument 1>;<Argument 2>;...;<Argument n>\n`
+
+### Commands
+* `Begin` -- start of testing
+* `End` -- end of testing
+* `Start` -- start of the test, arguments: test name, file name
+* `True` -- the test was successful, passes the line number as an argument
+* `False` -- the test was unsuccessful, passes the line number as an argument
+
+## Supplement
+### Macros
+* `PRINT` -- displays text
+* `CONFIRM` -- asks for confirmation to continue
+* `SKIP` -- marks the test as skipped
+
+### Commands
+There is only one command that the supplement adds
+* `Debug` -- command addition, passes the argument-subcommand and arguments for the subcommand
+
+#### Sub-commands
+* `Skip` -- test is skipped, passes the line number as an argument
+* `Print` -- text output, passes the text itself and the line number
+* `Confirm` -- asks for confirmation to continue execution, passes the line number. After sending, waits for the character `y` or `n`. If `y` is received, continues execution. If `n` is received, sends `Skip`
