@@ -118,8 +118,10 @@ Message format from `Arduino` to computer: `<First letter of command><Argument 1
 ## Supplement
 ### Macros
 * `PRINT` -- displays text
+* `WEAK_CONFIRM` -- asks for confirmation to continue
 * `CONFIRM` -- asks for confirmation to continue
 * `SKIP` -- marks the test as skipped
+* `_INTERNAL_CONFIRM` -- internal auxiliary function for CONFIRM and WEAK_CONFIRM
 
 ### Commands
 There is only one command that the supplement adds
@@ -128,4 +130,5 @@ There is only one command that the supplement adds
 #### Sub-commands
 * `Skip` -- test is skipped, passes the line number as an argument
 * `Print` -- text output, passes the text itself and the line number
-* `Confirm` -- asks for confirmation to continue execution, passes the line number. After sending, waits for the character `y` or `n`. If `y` is received, continues execution. If `n` is received, sends `Skip`
+* `Confirm (Weak)` -- asks for confirmation to continue execution, passes the line number. After sending, waits for the character `y` or `n`. If `y` is received, continues execution. If `n` is received, sends `Skip`
+* `Confirm` -- asks for confirmation to continue execution, passes the line number. After sending, waits for the character `y` or `n`. If `y` is received, continues execution. If `n` is received, sends `Abort`

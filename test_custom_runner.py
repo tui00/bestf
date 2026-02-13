@@ -70,6 +70,7 @@ class CustomTestRunner(TestRunnerBase):
                 self.test_name = args[0]
                 self.test_file = args[1]
                 self.test_timestamp = time.time()
+                click.secho(f"Running '{self.test_name}' from {self.test_file}...", bold=True, fg="cyan")
             elif cmd in ('T', 'F'):
                 self.test_suite.add_case(TestCase(
                     self.test_name,

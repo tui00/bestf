@@ -41,7 +41,7 @@
         Serial.println("DS;" _INTERNAL_STR(__LINE__)); \
         return;                                        \
     } while (0)
-#define CONFIRM                                        \
+#define _INTERNAL_CONFIRM(end)                         \
     do                                                 \
     {                                                  \
         Serial.println("DC;" _INTERNAL_STR(__LINE__)); \
@@ -51,13 +51,15 @@
             {                                          \
                 char c = Serial.read();                \
                 if (c == 'n')                          \
-                    SKIP;                              \
+                    end;                              \
                 else if (c == 'y')                     \
                     break;                             \
             }                                          \
             delay(100);                                \
         }                                              \
     } while (0)
+#define CONFIRM _INTERNAL_CONFIRM(ABORT)
+#define WEAK_CONFIRM _INTERNAL_CONFIRM(SKIP)
 #define PRINT(str) Serial.println("DT;" str ";" _INTERNAL_STR(__LINE__))
 
 #define START void _internal_start(void)
